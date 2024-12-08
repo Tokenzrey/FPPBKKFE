@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 /**
  * Tipe data untuk komentar.
@@ -56,35 +56,43 @@ const CommentSection: React.FC<{ initialComments?: Comment[] }> = ({
   };
 
   return (
-    <div className='comment-section'>
-      <h3 className='comment-title'>Komentar</h3>
+    <div className='mx-auto w-full max-w-2xl rounded-lg bg-gray-100 p-4 shadow-md'>
+      <h3 className='mb-4 text-xl font-bold text-gray-700'>Komentar</h3>
 
       {/* Daftar Komentar */}
-      <div className='comment-list'>
+      <div className='mb-4 space-y-4'>
         {comments.map((comment) => (
-          <div key={comment.id} className='comment'>
-            <p className='comment-name'>{comment.name}</p>
-            <p className='comment-timestamp'>
+          <div
+            key={comment.id}
+            className='rounded-md border bg-white p-4 shadow-sm'
+          >
+            <p className='text-sm font-semibold text-gray-600'>
+              {comment.name}
+            </p>
+            <p className='text-xs text-gray-500'>
               {formatTimestamp(comment.timestamp)}
             </p>
-            <p className='comment-content'>{comment.content}</p>
+            <p className='mt-2 text-gray-700'>{comment.content}</p>
           </div>
         ))}
         {comments.length === 0 && (
-          <p className='no-comments'>Belum ada komentar.</p>
+          <p className='text-center text-gray-500'>Belum ada komentar.</p>
         )}
       </div>
 
       {/* Form Tambah Komentar */}
-      <div className='add-comment'>
+      <div className='flex items-center space-x-2'>
         <input
           type='text'
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
           placeholder='Tambahkan komentar...'
-          className='comment-input'
+          className='flex-1 rounded-md border px-4 py-2 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400'
         />
-        <button onClick={handleAddComment} className='submit-button'>
+        <button
+          onClick={handleAddComment}
+          className='rounded-md bg-blue-500 px-4 py-2 font-semibold text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400'
+        >
           Kirim
         </button>
       </div>

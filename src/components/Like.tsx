@@ -33,17 +33,21 @@ const Like: React.FC<LikeProps> = ({ initialLiked, initialCount }) => {
   };
 
   return (
-    <div className='like-container'>
+    <div className='flex items-center space-x-4'>
       {/* Tombol Like/Unlike */}
       <button
         onClick={handleLikeClick}
-        className={`like-button ${liked ? 'liked' : ''}`}
+        className={`rounded-md px-4 py-2 font-semibold focus:outline-none focus:ring-2 ${
+          liked
+            ? 'bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-400'
+            : 'bg-gray-200 text-gray-700 hover:bg-gray-300 focus:ring-gray-400'
+        }`}
       >
         {liked ? 'Unlike' : 'Like'}
       </button>
 
       {/* Jumlah Like */}
-      <p className='like-count'>
+      <p className='text-sm font-medium text-gray-700'>
         {likeCount} Like{likeCount !== 1 && 's'}
       </p>
     </div>
