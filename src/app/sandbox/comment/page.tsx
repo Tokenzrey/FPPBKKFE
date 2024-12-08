@@ -1,7 +1,8 @@
+'use client'
 import React from 'react';
 import CommentSection from '@/components/Comment';
 
-const CommentPage: React.FC = () => {
+export default function CommentSandbox (){
   return (
     <div>
       <h2>Comment Page</h2>
@@ -9,17 +10,9 @@ const CommentPage: React.FC = () => {
 
       {/* Komponen Comment */}
       <CommentSection
-        initialComments={[
-          {
-            id: 1,
-            name: 'User1',
-            content: 'Ini adalah komentar pertama!',
-            timestamp: new Date().toISOString(),
-          },
-        ]}
+        blogId={10}
+        initialComments={[]}
       />
     </div>
   );
 };
-
-export default CommentPage;

@@ -1,3 +1,4 @@
+'use client'
 import React from 'react';
 import Like from '@/components/Like';
 
@@ -8,7 +9,7 @@ const LikePage: React.FC = () => {
       <p>Berikan tanda suka untuk artikel ini:</p>
 
       {/* Komponen Like */}
-      <Like initialLiked={false} initialCount={42} />
+      <Like blogId={10} />
     </div>
   );
 };
