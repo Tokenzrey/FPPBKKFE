@@ -6,7 +6,7 @@ import NextImage from '@/components/NextImage';
 import Typography from '@/components/Typography';
 
 // export default withAuth(LoginPage, 'auth');
-export default function LoginPage() {
+export default function RegisterPage() {
   return (
     <main
       id='login'
