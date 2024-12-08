@@ -7,16 +7,17 @@ import { removeToken, setToken } from '@/lib/cookies';
 import { User, loginToken } from '@/types/entities/user';
 
 /**
- * AuthStoreType defines the structure and functionality of the authentication store.
+ * AuthStoreType defines the structure of the authentication store.
+ * This includes user information, authentication state, and utility functions for login/logout.
+ *
  * @typedef {Object} AuthStoreType
  * @property {User | null} user - The currently authenticated user, or null if not authenticated.
- * @property {boolean} isAuthenticated - Indicates if the user is authenticated.
- * @property {boolean} isLoading - Indicates if authentication state is currently loading.
- * @property {(user: User & withToken) => void} login - Function to log in the user.
+ * @property {boolean} isAuthenticated - Indicates whether the user is authenticated.
+ * @property {boolean} isLoading - Indicates whether the authentication state is currently loading.
+ * @property {(user: User & loginToken) => void} login - Function to log in the user.
  * @property {() => void} logout - Function to log out the user.
- * @property {() => void} stopLoading - Function to stop loading state.
+ * @property {() => void} stopLoading - Function to stop the loading state.
  */
-// AuthStoreType defines the structure and functionality of the auth store.
 type AuthStoreType = {
   user: User | null;
   isAuthenticated: boolean;
@@ -26,66 +27,85 @@ type AuthStoreType = {
   stopLoading: () => void;
 };
 
-// Base auth store with Zustand, using immer for immutability and zustand-persist for persistence.
+/**
+ * Creates the base authentication store using Zustand.
+ * The store is persisted in localStorage, with state updates handled immutably via Immer.
+ */
 const useAuthStoreBase = create<AuthStoreType>()(
   persist(
     (set) => ({
-      user: null, // Initial user state is null
-      isAuthenticated: false, // User is not authenticated by default
-      isLoading: true, // Set loading state to true initially
+      user: null, // Initial user state (no user logged in).
+      isAuthenticated: false, // Default authentication state.
+      isLoading: true, // Default loading state.
 
       /**
-       * Login updates the state with user data and sets the token in cookies.
-       * @param {User & withToken} user - The user object containing token and user data.
+       * Logs in the user.
+       * Updates the store with user data, sets the authentication state, and saves the token in cookies.
+       *
+       * @param {User & loginToken} user - The user object containing token and user details.
        */
       login: (user: User & loginToken) => {
         try {
-          setToken(user.token); // Set token in cookies
+          // Save token to cookies
+          setToken(user.token);
+
+          // Update store state immutably using Immer
           set(
             produce((state: AuthStoreType) => {
-              state.user = user; // Update user state
-              state.isAuthenticated = true; // Set authenticated status
-              state.isLoading = false; // Stop loading after login
+              state.user = user; // Store user data
+              state.isAuthenticated = true; // Mark user as authenticated
+              state.isLoading = false; // Stop the loading state
             }),
           );
         } catch (error) {
-          console.error('Error setting token:', error); // Log any errors
+          console.error('Error during login process:', error); // Log any errors
         }
       },
 
       /**
-       * Logout clears the user data and removes the token from cookies.
+       * Logs out the user.
+       * Clears user data from the store, removes the authentication token, and resets the state.
        */
       logout: () => {
         try {
-          removeToken(); // Remove token from cookies
+          // Remove token from cookies
+          removeToken();
+
+          // Reset store state immutably using Immer
           set(
             produce((state: AuthStoreType) => {
-              state.user = null; // Clear user state
-              state.isAuthenticated = false; // Set authenticated status to false
+              state.user = null; // Clear user data
+              state.isAuthenticated = false; // Reset authentication state
             }),
           );
         } catch (error) {
-          console.error('Error removing token:', error); // Log any errors
+          console.error('Error during logout process:', error); // Log any errors
         }
       },
 
       /**
-       * stopLoading sets the loading state to false.
+       * Stops the loading state.
+       * Typically used after the initial authentication check completes.
        */
       stopLoading: () => {
         set(
           produce((state: AuthStoreType) => {
-            state.isLoading = false; // Stop loading
+            state.isLoading = false; // Mark loading as complete
           }),
         );
       },
     }),
-    { name: '@comick/token', getStorage: () => localStorage }, // Persisting in localStorage with custom key
+    {
+      name: '@comick/token', // Key for localStorage persistence
+      getStorage: () => localStorage, // Use localStorage for persistence
+    },
   ),
 );
 
-// Use createSelectorHooks for easy selector usage within components.
+/**
+ * Creates selector hooks for the authentication store.
+ * This allows components to access specific state properties without rerendering unnecessarily.
+ */
 const useAuthStore = createSelectorHooks(useAuthStoreBase);
 
 export default useAuthStore;

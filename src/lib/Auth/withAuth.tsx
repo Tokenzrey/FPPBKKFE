@@ -7,7 +7,7 @@ import { showToast } from '@/components/Toast';
 import api from '@/lib/api';
 import { getToken, removeToken } from '@/lib/cookies';
 import useAuthStore from './useAuthStore';
-import { ApiSuccess, ApiError } from '@/types/api';
+import { ApiResponse } from '@/types/api';
 import { User } from '@/types/entities/user';
 
 export const USER_ROUTE = '/';
@@ -28,6 +28,7 @@ export default function withAuth<T>(
     const pathname = usePathname();
     const redirect = useSearchParams().get('redirect') || pathname;
 
+    // Zustand selectors
     const isAuthenticated = useAuthStore.useIsAuthenticated();
     const isLoading = useAuthStore.useIsLoading();
     const login = useAuthStore.useLogin();
@@ -48,18 +49,20 @@ export default function withAuth<T>(
 
       const loadUser = async () => {
         try {
-          const res = await api.get<ApiSuccess<User> | ApiError>('/auth/me');
-          if (!res.data.success) {
+          const res = await api.get<ApiResponse<User>>('/api/users');
+
+          // Handle backend response
+          if (res.status !== 200 || res.data.status !== 'success') {
             showToast('Invalid login session', 'Please login again', 'ERROR');
-            throw new Error(res.data.message);
+            throw new Error(res.data.message || 'Failed to retrieve user');
           }
 
-          const userData = res.data.data;
+          const userData = res.data.data; // Extract user data
           if (userData) {
-            login({ ...userData, token });
+            login({ ...userData, token }); // Pass token along with user data
           }
         } catch (err) {
-          console.error(err);
+          console.error('Error loading user:', err);
           removeToken();
           logout();
         } finally {
@@ -84,7 +87,7 @@ export default function withAuth<T>(
      * Set isMounted to true after component mounts
      */
     useEffect(() => {
-      setIsMounted(true); // This will only happen after the component is mounted on the client
+      setIsMounted(true); // Mark as mounted after the first render
     }, []);
 
     /**
@@ -97,7 +100,7 @@ export default function withAuth<T>(
           showToast('Please login to continue', 'Access denied', 'ERROR');
           router.push(`${LOGIN_ROUTE}?redirect=${pathname}`);
         } else if (routeType === 'public' && isAuthenticated) {
-          // If the user is already authenticated, no need to login again, just stay on the page
+          // Redirect to the default user route or the provided redirect path if authenticated
           router.replace(redirect);
         }
       }

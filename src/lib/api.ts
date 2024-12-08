@@ -8,7 +8,7 @@ import { GetServerSidePropsContext } from 'next';
 import Cookies from 'universal-cookie';
 
 import { getToken } from '@/lib/cookies';
-import { UninterceptedApiError } from '@/types/api';
+import { ApiResponse } from '@/types/api';
 
 let apiContext: GetServerSidePropsContext | null = null;
 
@@ -26,7 +26,7 @@ export const setApiContext = (context: GetServerSidePropsContext): void => {
  * @returns {string} Base URL API.
  * @throws {Error} Jika environment mode tidak diatur.
  */
-function getBaseURL() {
+function getBaseURL(): string {
   const mode = process.env.NEXT_PUBLIC_RUN_MODE;
 
   if (mode === 'development') {
@@ -99,23 +99,24 @@ api.interceptors.request.use(
  * Menangani response sukses dan mengkustomisasi pesan error.
  */
 api.interceptors.response.use(
-  (response: AxiosResponse) => response,
-  (error: AxiosError<UninterceptedApiError>) => {
+  (response: AxiosResponse<ApiResponse<any>>) => {
+    // Hanya mengembalikan data dari respons
+    if (response.data.status === 'success') {
+      return response.data.data;
+    }
+
+    // Tangani error dari response backend
+    return Promise.reject({
+      message: response.data.message,
+    });
+  },
+  (error: AxiosError<ApiResponse<null>>) => {
     if (error.response?.data?.message) {
-      const message =
-        typeof error.response.data.message === 'string'
-          ? error.response.data.message
-          : Object.values(error.response.data.message)[0][0];
+      const message = error.response.data.message;
 
       return Promise.reject({
         ...error,
-        response: {
-          ...error.response,
-          data: {
-            ...error.response.data,
-            message,
-          },
-        },
+        message,
       });
     }
 

@@ -1,5 +1,9 @@
 export type User = {
-  username: string;
+  id: number;
+  name: string;
+  email: string;
+  tanggal_lahir: string;
+  biografi: string;
 };
 
 export type loginToken = {
