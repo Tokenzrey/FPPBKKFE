@@ -2,6 +2,8 @@
 
 import React from 'react';
 import { useParams } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
+import api from '@/lib/api';
 import Like from '@/components/Like';
 import CommentSection from '@/components/Comment';
 
@@ -9,7 +11,8 @@ type BlogData = {
   id: number;
   title: string;
   content: string;
-  author: {
+  thumbnail: string;
+  author: { 
     name: string;
     email: string;
   };
@@ -32,50 +35,44 @@ type BlogData = {
 const Blog: React.FC = () => {
   const { blogId } = useParams<{ blogId: string }>(); // Ambil blogId dari URL
 
-  // Dummy data untuk blog
-  const blog: BlogData = {
-    id: parseInt(blogId || '1', 10), // Pastikan blogId diubah menjadi angka
-    title: 'Membangun Aplikasi Web dengan React dan TypeScript',
-    content:
-      'React dan TypeScript memberikan kombinasi yang hebat untuk membangun aplikasi web modern. Artikel ini akan membahas bagaimana Anda dapat menggunakan kedua teknologi ini untuk membuat aplikasi yang scalable dan maintainable.',
-    author: {
-      name: 'Jane Doe',
-      email: 'jane.doe@example.com',
+  const { data: blog, isLoading, isError, error } = useQuery<BlogData, Error>({
+    queryKey: ['blog', blogId],
+    queryFn: async () => {
+      if (!blogId) throw new Error('Blog ID is missing');
+      const response = await api.get(`/api/blog/${blogId}`);
+      return response.data.data;
     },
-    likes: {
-      count: 42,
-      userLiked: false,
-    },
-    comments: [
-      {
-        id: 1,
-        name: 'John Smith',
-        content: 'Artikel yang sangat membantu! Terima kasih.',
-        timestamp: new Date().toISOString(),
-      },
-      {
-        id: 2,
-        name: 'Alice Johnson',
-        content: 'Saya baru tahu tentang TypeScript, sangat menarik!',
-        timestamp: new Date().toISOString(),
-      },
-    ],
-  };
+    enabled: !!blogId, // Hanya jalankan jika blogId tersedia
+  });
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (isError) {
+    return <p className="text-red-500">{error.message}</p>;
+  }
+  // Log the fetched blog data
+  if (blog) {
+    console.log(blog);
+  }
+  
+  if (!blog) {
+    return <p>Blog not found</p>;
+  }
 
   return (
-    <div className='mx-auto max-w-4xl space-y-6 rounded-lg bg-gray-100 p-6 shadow-md'>
+    <div className="mx-auto max-w-4xl space-y-6 rounded-lg p-6 shadow-md">
       {/* Bagian Header Blog */}
-      <div className='space-y-2'>
-        <h1 className='text-2xl font-bold text-gray-800'>{blog.title}</h1>
-        <p className='text-sm text-gray-600'>
+      <div className="space-y-2">
+        <h1 className="text-2xl font-bold text-gray-800">{blog.title}</h1>
+        <p className="text-sm text-gray-600">
           Ditulis oleh{' '}
-          <span className='font-semibold text-gray-800'>
-            {blog.author.name}
-          </span>{' '}
+          <span className="font-semibold text-gray-800">{blog.author.name}</span>
           (
           <a
             href={`mailto:${blog.author.email}`}
-            className='text-blue-500 hover:underline'
+            className="text-blue-500 hover:underline"
           >
             {blog.author.email}
           </a>
@@ -83,22 +80,29 @@ const Blog: React.FC = () => {
         </p>
       </div>
 
+      <hr className="my-4 border-gray-300" />
+
       {/* Isi Blog */}
-      <div className='rounded-md bg-white p-4 text-lg leading-relaxed text-gray-700 shadow-sm'>
+      <div className="flex justify-center">
+        <img
+          src={`http://localhost:4000/uploads/${blog.thumbnail}`} // Use the dynamic thumbnail path
+          alt="Blog Thumbnail"
+          className="rounded-md"
+        />
+      </div>
+
+      <div className="rounded-md bg-white p-4 text-lg text-justify leading-relaxed text-gray-700 shadow-sm">
         <p>{blog.content}</p>
       </div>
 
       {/* Komponen Like */}
-      <div className='flex justify-start'>
-        <Like
-          initialLiked={blog.likes.userLiked}
-          initialCount={blog.likes.count}
-        />
+      <div className="flex justify-start">
+        <Like blogId={blogId} />
       </div>
 
       {/* Komponen Comment */}
       <div>
-        <CommentSection initialComments={blog.comments} />
+        <CommentSection blogId={blogId} />
       </div>
     </div>
   );

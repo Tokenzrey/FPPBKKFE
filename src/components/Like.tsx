@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import api from '@/lib/api';
+import IconButton from './buttons/IconButton';
+import { ThumbsUp, Heart } from 'lucide-react';
+import { cn } from '@/lib/cn';import api from '@/lib/api';
 
 /**
  * Tipe data untuk properti komponen Like.
@@ -7,7 +9,7 @@ import api from '@/lib/api';
  * @property {number} blogId - ID blog yang akan dilike
  */
 type LikeProps = {
-  blogId: number;
+  blogId: string;
 };
 
 /**
@@ -46,12 +48,7 @@ const Like: React.FC<LikeProps> = ({ blogId }) => {
   const handleLikeClick = async () => {
     try {
       const response = await api.post('/like', 
-        { blog_id: blogId },
-        {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
+        { blog_id: Number(blogId) }
       );
 
       // Update state based on the server response
@@ -76,16 +73,11 @@ const Like: React.FC<LikeProps> = ({ blogId }) => {
   return (
     <div className='flex items-center space-x-4'>
       {/* Tombol Like/Unlike */}
-      <button
+      <IconButton
         onClick={handleLikeClick}
-        className={`rounded-md px-4 py-2 font-semibold focus:outline-none focus:ring-2 ${
-          liked
-            ? 'bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-400'
-            : 'bg-gray-200 text-gray-700 hover:bg-gray-300 focus:ring-gray-400'
-        }`}
-      >
-        {liked ? 'Unlike' : 'Like'}
-      </button>
+        Icon={liked ? Heart : ThumbsUp}
+        className={cn(liked && '!bg-success-normal')}
+      />
 
       {/* Jumlah Like */}
       <p className='text-sm font-medium text-gray-700'>
