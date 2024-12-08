@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
-import {  Search, PieChart, LogOut, FolderKey } from 'lucide-react';
+import {  Search, PieChart, LogOut, FolderKey, UserRoundPen, SquarePen } from 'lucide-react';
 
 import { NavMain } from '@/components/nav-main';
 import {
@@ -19,20 +19,20 @@ import useAuthStore from '@/lib/Auth/useAuthStore';
 const data = {
   navMain: [
     {
-      title: 'Private',
-      url: '/private',
-      icon: FolderKey,
-    },
-    {
       title: 'Dashboard',
       url: '/dashboard',
       icon: PieChart,
+    },
+    {
+      title: 'Profile',
+      url: '/profile',
+      icon: UserRoundPen,
       isActive: true,
     },
     {
-      title: 'Search',
-      url: '/search',
-      icon: Search,
+      title: 'Create',
+      url: '/create',
+      icon: SquarePen,
     },
   ],
 };
