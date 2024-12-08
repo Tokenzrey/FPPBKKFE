@@ -26,7 +26,7 @@ export type InputProps = {
   leftIconClassName?: string;
 } & React.ComponentPropsWithoutRef<'input'>;
 
-const Input: React.FC<InputProps> = ({
+export default function Input({
   id,
   label,
   helperText,
@@ -45,7 +45,7 @@ const Input: React.FC<InputProps> = ({
   leftIconClassName,
   helperTextClassName,
   ...rest
-}) => {
+}: InputProps) {
   const {
     register,
     formState: { errors },
@@ -53,8 +53,6 @@ const Input: React.FC<InputProps> = ({
 
   const [showPassword, setShowPassword] = useState(false);
   const error = get(errors, id);
-
-  const inputRef = useRef<HTMLInputElement | null>(null);
 
   return (
     <div className='w-full space-y-2'>
@@ -105,13 +103,8 @@ const Input: React.FC<InputProps> = ({
 
           <input
             {...register(id, validation)}
-            ref={inputRef} // Memanfaatkan useRef untuk mengikat ref
             type={
-              type === 'password'
-                ? showPassword
-                  ? 'text'
-                  : 'password'
-                : type
+              type === 'password' ? (showPassword ? 'text' : 'password') : type
             }
             id={id}
             name={id}
@@ -186,6 +179,4 @@ const Input: React.FC<InputProps> = ({
       )}
     </div>
   );
-};
-
-export default Input;
+}

@@ -6,15 +6,22 @@ export type LoginFormRequest = {
 };
 
 export type RegisterFormRequest = {
-  account_name: string;
+  name: string;
+  email: string;
   password: string;
   confirm_password: string;
-  govermentid: string;
-  birth_date: Date;
+  tanggal_lahir: string;
+  biografi: string;
 };
 
 export type RegisterFormResponse = {
-  message: string;
+  id: number;
+  name: string;
+  email: string;
+  tanggal_lahir: string;
+  biografi: string;
+  created_at: string;
 };
+
 
 export type LoginFormResponse = withToken;
