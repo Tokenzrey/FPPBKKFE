@@ -1,4 +1,7 @@
+'use client';
+
 import React from 'react';
+import { useParams } from 'next/navigation';
 import Like from '@/components/Like';
 import CommentSection from '@/components/Comment';
 
@@ -27,9 +30,11 @@ type BlogData = {
  * @returns {JSX.Element} Elemen JSX untuk halaman blog.
  */
 const Blog: React.FC = () => {
-  // Inisialisasi data dummy blog
+  const { blogId } = useParams<{ blogId: string }>(); // Ambil blogId dari URL
+
+  // Dummy data untuk blog
   const blog: BlogData = {
-    id: 1,
+    id: parseInt(blogId || '1', 10), // Pastikan blogId diubah menjadi angka
     title: 'Membangun Aplikasi Web dengan React dan TypeScript',
     content:
       'React dan TypeScript memberikan kombinasi yang hebat untuk membangun aplikasi web modern. Artikel ini akan membahas bagaimana Anda dapat menggunakan kedua teknologi ini untuk membuat aplikasi yang scalable dan maintainable.',
