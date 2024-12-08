@@ -99,16 +99,8 @@ api.interceptors.request.use(
  * Menangani response sukses dan mengkustomisasi pesan error.
  */
 api.interceptors.response.use(
-  (response: AxiosResponse<ApiResponse<any>>) => {
-    // Hanya mengembalikan data dari respons
-    if (response.data.status === 'success') {
-      return response.data.data;
-    }
-
-    // Tangani error dari response backend
-    return Promise.reject({
-      message: response.data.message,
-    });
+  (config) => {
+    return config;
   },
   (error: AxiosError<ApiResponse<null>>) => {
     if (error.response?.data?.message) {
