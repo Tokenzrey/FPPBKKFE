@@ -1,22 +1,21 @@
 'use client';
 import React, { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import axios from 'axios';
 
 import Button from '@/components/buttons/Button';
 import Input from '@/components/form/Input';
-import { ApiResponse } from '@/types/api';
-import { RegisterFormRequest, RegisterFormResponse } from '@/types/login';
-import { showToast } from '@/components/Toast';
-import { useRouter } from 'next/navigation';
+import { RegisterFormRequest} from '@/types/login';
+import { useRegisterMutation } from '../hooks/mutation';
 
 export default function RegisterForm() {
   // Inisialisasi react-hook-form dengan validasi mode "onTouched"
   const methods = useForm<RegisterFormRequest>({
     mode: 'onTouched',
   });
-  const router = useRouter();
   const { handleSubmit, setError, watch } = methods;
+
+  // Gunakan mutasi untuk pengelolaan pendaftaran
+  const { handleRegister, isPending } = useRegisterMutation();
 
   /**
    * Fungsi untuk menangani pengiriman formulir
@@ -32,32 +31,10 @@ export default function RegisterForm() {
     }
 
     try {
-      // Kirim data ke API
-      const response = await axios.post<ApiResponse<RegisterFormResponse>>(
-        '/api/signup',
-        {
-          name: data.name,
-          email: data.email,
-          password: data.password,
-          tanggal_lahir: data.tanggal_lahir,
-          biografi: data.biografi,
-        },
-      );
-
-      // Periksa apakah respons sukses
-      if (response.data.status === 'success') {
-        showToast('Registration Successful', 'You can now log in!', 'SUCCESS');
-        router.push('/login');
-        console.log('Registration Successful:', response.data.data);
-      } else {
-        showToast('Registration Failed', response.data.message, 'ERROR');
-      }
-    } catch (error: any) {
-      // Tangani error dari API
-      const message =
-        error.response?.data?.message ||
-        'An error occurred during registration';
-      showToast('Registration Failed', message, 'ERROR');
+      // Kirim data menggunakan mutasi
+      await handleRegister(data);
+    } catch (error) {
+      console.error('Error during registration:', error);
     }
   };
 

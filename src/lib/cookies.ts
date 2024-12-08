@@ -41,11 +41,10 @@ export const setToken = (token: string, expirationTime?: string) => {
     // sameSite: true,
     partitioned: true,
   };
-
+  console.log('token:', token);
   // Store the token securely
-  cookies.set('@comick/token', token, options);
+  cookies.set('@pbkk/token', token, options);
 };
-
 
 /**
  * Removes the authentication token from cookies.

@@ -5,10 +5,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { useLoginMutation } from '@/app/login/hooks/mutation';
 import Button from '@/components/buttons/Button';
 import Input from '@/components/form/Input';
-import PrimaryLink from '@/components/links/PrimaryLink';
-import Typography from '@/components/Typography';
 import { LoginFormRequest } from '@/types/login';
-import LoginPDFModal from './LoginPDFModal';
 
 export default function LoginForm() {
   const methods = useForm<LoginFormRequest>({
@@ -32,14 +29,17 @@ export default function LoginForm() {
         className='mx-auto flex w-full flex-col items-center justify-center gap-5 md:w-[85%]'
       >
         <Input
-          id='account_name'
-          label='Username'
+          id='email'
+          label='Email'
           className='w-full rounded-lg border-2 border-blue-400 p-2 placeholder:font-normal'
-          placeholder='Masukkan username'
+          placeholder='Masukkan email'
           validation={{
-            required: 'username tidak boleh kosong!',
+            pattern: {
+              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+              message: 'Format email tidak valid!',
+            },
+            required: 'email tidak boleh kosong!',
           }}
-          {...register('account_name', { required: 'Username is required!' })}
         />
 
         <Input
@@ -51,7 +51,6 @@ export default function LoginForm() {
           validation={{
             required: 'Password tidak boleh kosong!',
           }}
-          {...register('password', { required: 'Password is required!' })}
         />
         <Button
           type='submit'

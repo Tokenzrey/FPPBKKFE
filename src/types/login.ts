@@ -1,7 +1,7 @@
-import { withToken } from '@/types/entities/user';
+import { loginToken } from '@/types/entities/user';
 
 export type LoginFormRequest = {
-  account_name: string;
+  email: string;
   password: string;
 };
 
@@ -23,5 +23,4 @@ export type RegisterFormResponse = {
   created_at: string;
 };
 
-
-export type LoginFormResponse = withToken;
+export type LoginFormResponse = loginToken;

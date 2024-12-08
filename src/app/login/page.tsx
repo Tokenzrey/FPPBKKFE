@@ -1,10 +1,7 @@
 import * as React from 'react';
 
 import LoginForm from '@/app/login/components/LoginForm';
-import withAuth from '@/lib/Auth/withAuth';
-import NextImage from '@/components/NextImage';
 import Typography from '@/components/Typography';
-import LoginPDFModal from './components/LoginPDFModal';
 // export default withAuth(LoginPage, 'auth');
 export default function LoginPage() {
   return (
@@ -28,7 +25,6 @@ export default function LoginPage() {
             </Typography>
           </div>
           <LoginForm />
-          <LoginPDFModal />
         </div>
       </div>
     </main>
