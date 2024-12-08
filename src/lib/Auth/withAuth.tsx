@@ -5,6 +5,7 @@ import * as React from 'react';
 import LoadingPage from '@/components/Loading';
 import { showToast } from '@/components/Toast';
 import api from '@/lib/api';
+import { AxiosError, AxiosResponse } from 'axios';
 import { getToken, removeToken } from '@/lib/cookies';
 import useAuthStore from './useAuthStore';
 import { ApiResponse } from '@/types/api';
@@ -49,10 +50,11 @@ export default function withAuth<T>(
 
       const loadUser = async () => {
         try {
-          const res = await api.get<ApiResponse<User>>('/api/users');
+          const res: AxiosResponse<ApiResponse<User>> =
+            await api.get('/api/users/');
 
           // Handle backend response
-          if (res.status !== 200 || res.data.status !== 'success') {
+          if (res.data.status !== 'success' || !res.data.data) {
             showToast('Invalid login session', 'Please login again', 'ERROR');
             throw new Error(res.data.message || 'Failed to retrieve user');
           }

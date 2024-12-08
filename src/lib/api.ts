@@ -79,7 +79,7 @@ api.interceptors.request.use(
       }
 
       const cookies = new Cookies(apiContext.req?.headers.cookie);
-      token = cookies.get('@comick/token');
+      token = cookies.get('@pbkk/token');
     }
 
     // Menambahkan Authorization header jika token ada.

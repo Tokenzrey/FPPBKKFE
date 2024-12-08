@@ -8,7 +8,7 @@ const cookies = new Cookies();
  * @returns {string | undefined} The stored token, or undefined if it does not exist.
  */
 export const getToken = (): string | undefined => {
-  return cookies.get('@comick/token');
+  return cookies.get('@pbkk/token');
 };
 
 /**
@@ -51,5 +51,5 @@ export const setToken = (token: string, expirationTime?: string) => {
  * This is typically called when a user logs out.
  */
 export const removeToken = () => {
-  cookies.remove('@comick/token', { path: '/' });
+  cookies.remove('@pbkk/token', { path: '/' });
 };

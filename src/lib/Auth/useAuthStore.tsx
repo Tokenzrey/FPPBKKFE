@@ -96,7 +96,7 @@ const useAuthStoreBase = create<AuthStoreType>()(
       },
     }),
     {
-      name: '@comick/token', // Key for localStorage persistence
+      name: '@pbkk/token', // Key for localStorage persistence
       getStorage: () => localStorage, // Use localStorage for persistence
     },
   ),

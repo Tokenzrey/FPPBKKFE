@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError, AxiosResponse } from 'axios';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import { showToast } from '@/components/Toast';
 import api from '@/lib/api';
@@ -13,7 +13,7 @@ import { User } from '@/types/entities/user';
 export const useLoginMutation = () => {
   const router = useRouter();
   const { login } = useAuthStore();
-
+  const searchParams = useSearchParams();
   const { mutateAsync: handleLogin, isPending } = useMutation<
     ApiResponse<LoginFormResponse>,
     AxiosError<ApiError>,
@@ -67,7 +67,8 @@ export const useLoginMutation = () => {
     },
     onSuccess: () => {
       // Redirect setelah login sukses
-      // router.push('/');
+      const redirect = searchParams.get('redirect') || '/';
+      router.push(redirect);
     },
     onError: (error) => {
       // Tampilkan pesan error
