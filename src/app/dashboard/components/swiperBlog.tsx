@@ -51,7 +51,7 @@ export function CarouselSize() {
             className='flex basis-full items-center justify-center md:basis-1/2 lg:basis-1/5'
           >
             <UnstyledLink
-              href={`/blogs/${blog.ID}`} // Blog detail link
+              href={`/blog/${blog.ID}`} // Blog detail link
               className='relative h-64 w-full overflow-hidden rounded-lg md:h-80 lg:h-96'
             >
               <img

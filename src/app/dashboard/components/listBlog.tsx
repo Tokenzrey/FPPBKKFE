@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useSearchBlogs } from '../hooks/mutation';
 import Button from '@/components/buttons/Button';
+import UnstyledLink from '@/components/links/UnstyledLink';
 
 /**
  * ListBlog Component: Displays a paginated list of blogs with search and filter functionality.
@@ -62,9 +63,10 @@ export function ListBlog() {
       {/* Blog List */}
       <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'>
         {blogs.map((blog) => (
-          <div
+          <UnstyledLink
             key={blog.ID}
             className='rounded-lg border bg-white p-4 shadow-md hover:shadow-lg'
+            href={`/blog/${blog.ID}`}
           >
             <img
               src={`http://localhost:4000/uploads/${blog.thumbnail}`}
@@ -76,7 +78,7 @@ export function ListBlog() {
             <p className='mt-1 text-sm text-gray-400'>
               By: {blog.User.name || 'Unknown'}
             </p>
-          </div>
+          </UnstyledLink>
         ))}
       </div>
 
