@@ -39,9 +39,9 @@ export function CarouselSize() {
 
   // Render the carousel with fetched blogs
   return (
-    <section className='relative w-full px-8 pb-12'>
+    <section className='relative flex w-full flex-col items-center gap-6 px-8 pb-12'>
       {/* Search and Filter Section */}
-      <div className='mb-4 flex items-center justify-between'>
+      <div className='mb-4 flex w-full items-center justify-between'>
         <label htmlFor='filter' className='mr-2 font-medium'>
           Sort by:
         </label>
